@@ -1,3 +1,5 @@
 *.avi
 *.srt
 *.env
+__pycache__/
+/snapshots/
