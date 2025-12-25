@@ -16,4 +16,17 @@ def notify(text: str):
     r = requests.post(url, data={"chat_id": CHAT_ID, "text": text}, timeout=10)
     print(r.status_code, r.text)
 
-notify("Motion detected!")
+
+def send_photo(image_path: str, caption: str = ""):
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
+    with open(image_path, "rb") as f:
+        r = requests.post(
+            url,
+            data={"chat_id": CHAT_ID, "caption": caption},
+            files={"photo": f},
+            timeout=30
+        )
+    print("Telegram:", r.status_code, r.text)
+
+if __name__ == "__main__":
+    notify("notifications.py test message")

@@ -1,10 +1,14 @@
 import cv2
 import numpy as np
+from notification import *
+import time
+import os
+import subprocess
 
 cap = cv2.VideoCapture(2)
 
 CAMERA_FPS = 30.0
-SECONDS_TO_RECORD = 5
+SECONDS_TO_RECORD = 60
 
 frame_rec_count = 0
 detected_motion = False
@@ -21,6 +25,7 @@ srt_file = open("output.srt", "w")
 current_time_seconds = 0.0
 subtitle_index = 1
 
+notification_sent = False
 
 def srt_timestamp(seconds):
     hours = int(seconds // 3600)
@@ -63,9 +68,26 @@ while(True):
         print("first frame")
         first_frame = False
         continue
-    if result >= MOVEMENT_THRESHOLD:
+
+    # 10 second buffer to avoid false positives on startup
+    if result >= MOVEMENT_THRESHOLD and current_time_seconds > 10:
         print("Motion detected!", result)
         detected_motion = True
+        if not notification_sent:
+
+            subprocess.Popen([
+                "aplay",
+                "sounds/siren.wav"
+            ])
+
+            snapshot_path = f"snapshots/motion_{int(time.time())}.jpg"
+            os.makedirs("snapshots", exist_ok=True)
+
+            cv2.imwrite(snapshot_path, frame)
+            send_photo(snapshot_path, caption="📸 Motion detected!")
+
+            # notify("Motion Detected!")
+            notification_sent = True
 
     if detected_motion: 
         out.write(frame)
