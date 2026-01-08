@@ -1,3 +1,14 @@
+
+# IMPORTANT
+## `HSS` is the original prototype.
+## [`GSS`](https://github.com/unix2dossss/GSS) is the improved and actively maintained version.
+
+
+
+<br>
+<br>
+<br>
+
 ### Home Security System
 
 ![Simple Camera Security System](HSS.png)
